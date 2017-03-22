@@ -1,5 +1,5 @@
 ; LCD.s
-; Student names: change this to your names or look very silly
+; Student names: John Sigmon and Neel Kattumadam
 ; Last modification date: change this to the last modification date or look very silly
 
 ; Runs on LM4F120/TM4C123
@@ -53,10 +53,12 @@ SSI_SR_TNF              EQU   0x00000002  ; SSI Transmit FIFO Not Full
 ; NOTE: These functions will crash or stall indefinitely if
 ; the SSI0 module is not initialized and enabled.
 
-; This is a helper function that sends an 8-bit command to the LCD.
-; Input: R0  8-bit command to transmit
-; Output: none
-; Assumes: SSI0 and port A have already been initialized and enabled
+
+	; This is a helper function that sends an 8-bit command to the LCD.
+	; Input: R0  8-bit command to transmit
+	; Output: none
+	; Assumes: SSI0 and port A have already been initialized and enabled
+
 writecommand
 ;; --UUU-- Code to write a command to the LCD
 ;1) Read SSI0_SR_R and check bit 4, 
@@ -66,6 +68,18 @@ writecommand
 ;5) Read SSI0_SR_R and check bit 4, 
 ;6) If bit 4 is high, loop back to step 5 (wait for BUSY bit to be low)
 
+CHECK_BUSY	LDR R4, SSIO_SR_R ;
+			AND R4, 0x10;
+			SUBS R4, #16;
+			BNE CHECK_BUSY;		;;check if this branch is correct, should loop if equal to zero
+			
+			;;CLEAR D/C
+			;;WRITE COMMAND
+			
+CHECK_BUSY2	LDR R4, SSIO_SR_R ;
+			AND R4, 0x10;
+			SUBS R4, #16;
+			BNE CHECK_BUSY2;
     
     
     BX  LR                          ;   return
