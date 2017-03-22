@@ -3,7 +3,7 @@
 // You are allowed to use any switch and any LED, 
 // although the Lab suggests the SW1 switch PF4 and Red LED PF1
 // Runs on LM4F120 or TM4C123
-// Program written by: put your names here
+// Program written by: John Sigmon and Neel Kattumadam
 // Date Created: 
 // Last Modified:  
 // Lab number: 6
@@ -17,16 +17,27 @@
 // Input: none
 // Output: none
 void IO_Init(void) {
- // --UUU-- Code to initialize PF4 and PF2
+ volatile unsigned long delay;
+	SYSCTL_RCGC2_R |= 0x00000020;
+	delay = SYSCTL_RCGCGPIO_R ;
+	GPIO_PORTF_LOCK_R = 0x4C4F434B;   //  unlock GPIO Port F
+	GPIO_PORTF_CR_R = 0x1F;           // allow changes to PF4-0
+	GPIO_PORTF_DIR_R |= 0x00000004;		//Set PF2 to be output
+	GPIO_PORTF_DIR_R &= 0x0000000F;		//Clear PF4 to be input
+	GPIO_PORTF_AFSEL_R = 0x00;				// Turn off Alt Func.
+	GPIO_PORTF_DEN_R |= 0x14;					//Set PF2 and PF4 to Digital
 }
 
 //------------IO_HeartBeat------------
 // Toggle the output state of the  LED.
 // Input: none
 // Output: none
+// PF2 is used for a heartbeat
+
 void IO_HeartBeat(void) {
- // --UUU-- PF2 is heartbeat
-}
+	
+	}
+
 
 
 //------------IO_Touch------------
