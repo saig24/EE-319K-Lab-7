@@ -55,7 +55,7 @@ void IO_HeartBeat(void) {
 // Output: none
 void IO_Touch(void) {
  // --UUU-- wait for release; delay for 20ms; and then wait for press
-	while((GPIO_PORTF_DATA_R|=0x10)!=0) {
+	while((GPIO_PORTF_DATA_R|=0x10)!=0) {	
 	
 	}
 	

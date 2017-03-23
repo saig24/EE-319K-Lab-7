@@ -26,14 +26,13 @@
 ; Output: none
 ; Invariables: This function must not permanently modify registers R4 to R11
 LCD_OutDec
-	MOV R0,#155
 	MOV R3,#10;
- 	UDIV R1,R0,R3;
+ 	UDIV R1,R0,R3;		;divide R0(input) by 10
 	MUL R3,R1,R3
-	SUBS R2,R0,R3
-	ADD R2,R2,#0X30;
+	SUBS R2,R0,R3		;calculate remainder of r0/10
+	ADD R2,R2,#0X30;	; add x30 to calculate ascii value of integer
 	PUSH{R2}
-	ADDS R1,#0;
+	ADDS R1,#0;			; check if quotient of division is 0, exit if that's the case
 	BEQ finish
 	
 	MOV R3,#10
@@ -66,9 +65,9 @@ LCD_OutDec
 	
 	
 	
-finish POP{R0,R1,R2}
-	BL ST7735_OutChar
-	ADD R0,R1;
+finish POP{R0,R1,R2}		; POP all the registers containing ascii values
+	BL ST7735_OutChar		; branch to output method
+	ADD R0,R1;				; move output value into r0
 	BL ST7735_OutChar
 	ADD R0,R2;
 	BL ST7735_OutChar
