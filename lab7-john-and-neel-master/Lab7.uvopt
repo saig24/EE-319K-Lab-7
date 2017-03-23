@@ -227,7 +227,7 @@
       <Focus>0</Focus>
       <ColumnNumber>3</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>1</TopLine>
+      <TopLine>1124</TopLine>
       <CurrentLine>1131</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\ST7735.c</PathWithFileName>
@@ -241,10 +241,10 @@
       <FileType>2</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>24</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>22</TopLine>
-      <CurrentLine>79</CurrentLine>
+      <TopLine>1</TopLine>
+      <CurrentLine>1</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\LCD.s</PathWithFileName>
       <FilenameWithoutPath>LCD.s</FilenameWithoutPath>
@@ -259,7 +259,7 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>1</TopLine>
+      <TopLine>61</TopLine>
       <CurrentLine>14</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\Print.s</PathWithFileName>
@@ -276,7 +276,7 @@
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
       <TopLine>1</TopLine>
-      <CurrentLine>41</CurrentLine>
+      <CurrentLine>1</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\IO.c</PathWithFileName>
       <FilenameWithoutPath>IO.c</FilenameWithoutPath>
@@ -291,7 +291,7 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>449</TopLine>
+      <TopLine>470</TopLine>
       <CurrentLine>505</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\Lab7Main.c</PathWithFileName>
