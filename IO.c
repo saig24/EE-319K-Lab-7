@@ -35,8 +35,17 @@ void IO_Init(void) {
 // PF2 is used for a heartbeat
 
 void IO_HeartBeat(void) {
-	
+	GPIO_PORTF_DATA_R ^= 0x04;
 	}
+
+void Wait10ms(void){
+		uint32_t delay=31400;
+		while(delay>0){
+		delay--;	
+		}
+		
+	}
+
 
 
 
@@ -47,5 +56,14 @@ void IO_HeartBeat(void) {
 // Output: none
 void IO_Touch(void) {
  // --UUU-- wait for release; delay for 20ms; and then wait for press
+	while((GPIO_PORTF_DATA_R|=0x10)!=0) {	
+	
+	}
+	
+Wait10ms();
+	
+		while((GPIO_PORTF_DATA_R|=0x10)==0) {
+	
+	}
 }  
 

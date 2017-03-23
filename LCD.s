@@ -68,16 +68,24 @@ writecommand
 ;5) Read SSI0_SR_R and check bit 4, 
 ;6) If bit 4 is high, loop back to step 5 (wait for BUSY bit to be low)
 
-CHECK_BUSY	LDR R4, SSIO_SR_R ;
-			AND R4, 0x10;
+CHECK_BUSY	LDR R6,=SSI0_SR_R
+			LDR R4,[R6]
+			AND R4, #0x10;
 			SUBS R4, #16;
-			BNE CHECK_BUSY;		;;check if this branch is correct, should loop if equal to zero
+			BEQ CHECK_BUSY;		; if bit4 is high, keep looping
+			LDR R5,=DC;
+			LDR R4,[R5];
+			AND R4,#0;			; clear the D/C memory location
+			LDR R4,=DC_COMMAND;
+			LDR R4,[R4];
+			LDR R6,=SSI0_DR_R
+			STR R4,[R6];		;write command to SSIO_DR_R
 			
-			;;CLEAR D/C
-			;;WRITE COMMAND
+		
 			
-CHECK_BUSY2	LDR R4, SSIO_SR_R ;
-			AND R4, 0x10;
+			
+CHECK_BUSY2	
+			AND R4, #0x10;
 			SUBS R4, #16;
 			BNE CHECK_BUSY2;
     
@@ -95,9 +103,19 @@ writedata
 ;3) Set D/C=PA6 to one
 ;4) Write the 8-bit data to SSI0_DR_R
 
+CHECK	LDR R6,=SSI0_SR_R
+		SUBS R6,#0x02		
+		BNE CHECK					; keep looping till bit 1 is low
+		LDR R5,=DC;
+		LDR R4,[R5];
+		ORR R4,#0xFFFFFFFF;			; set D/C to 1
+		STR R4,[R5];
+		LDR R6,=SSI0_DR_R
+		STR R0,[R6]					; write 8 bit data
+		
+    BX  LR                          ;   return 
     
-    
-    BX  LR                          ;   return
+   
 
 
 ;***************************************************
