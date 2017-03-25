@@ -1,6 +1,6 @@
 ; LCD.s
 ; Student names: John Sigmon and Neel Kattumadam
-; Last modification date: change this to the last modification date or look very silly
+; Last modification date: You're silly
 
 ; Runs on LM4F120/TM4C123
 ; Use SSI0 to send an 8-bit code to the ST7735 160x128 pixel LCD.
@@ -60,60 +60,79 @@ SSI_SR_TNF              EQU   0x00000002  ; SSI Transmit FIFO Not Full
 	; Assumes: SSI0 and port A have already been initialized and enabled
 
 writecommand
-;; --UUU-- Code to write a command to the LCD
-;1) Read SSI0_SR_R and check bit 4, 
-;2) If bit 4 is high, loop back to step 1 (wait for BUSY bit to be low)
-;3) Clear D/C=PA6 to zero
-;4) Write the command to SSI0_DR_R
-;5) Read SSI0_SR_R and check bit 4, 
-;6) If bit 4 is high, loop back to step 5 (wait for BUSY bit to be low)
-
-CHECK_BUSY	LDR R6,=SSI0_SR_R
+				;; --UUU-- Code to write a command to the LCD
+				;1) Read SSI0_SR_R and check bit 4, 
+				;2) If bit 4 is high, loop back to step 1 (wait for BUSY bit to be low)
+				;3) Clear D/C=PA6 to zero
+				;4) Write the command to SSI0_DR_R
+				;5) Read SSI0_SR_R and check bit 4, 
+				;6) If bit 4 is high, loop back to step 5 (wait for BUSY bit to be low)
+			
+			MOV R7, #0
+CHECK_BUSY	
+			LDR R6,=SSI0_SR_R
 			LDR R4,[R6]
-			AND R4, #0x10;
-			SUBS R4, #16;
-			BEQ CHECK_BUSY;		; if bit4 is high, keep looping
-			LDR R5,=DC;
-			LDR R4,[R5];
-			AND R4,#0;			; clear the D/C memory location
-			LDR R4,=DC_COMMAND;
-			LDR R4,[R4];
-			LDR R6,=SSI0_DR_R
-			STR R4,[R6];		;write command to SSIO_DR_R
+			AND R4, #0x10
+			SUBS R4, #16
+			BEQ CHECK_BUSY			; if bit4 is high, keep looping
+			ADD R7, #0
+			BEQ FIRST_RUN
+			BX LR
 			
-		
+FIRST_RUN	LDR R6, =DC				
+			LDR R5, =DC_DATA
+			STR R5, [R6]
+			
+			LDR R5, =SSI0_DR_R
+			STR R0, [R5]					;Writes command from R0 to SSIO_DR_R
+			ADD R7, #1
+			B CHECK_BUSY
 			
 			
-CHECK_BUSY2	
-			AND R4, #0x10;
-			SUBS R4, #16;
-			BNE CHECK_BUSY2;
+;**********old code***************			
+			;LDR R5,=DC;
+			;LDR R4,[R5];
+			;AND R4,#0;			; clear the D/C memory location
+			;LDR R4,=DC_COMMAND	;where is this command coming from??????	
+			;LDR R4,[R4];		; Is dc command the command or the address of the command?
+			;LDR R6,=SSI0_DR_R
+			;STR R4,[R6];		;write command to SSIO_DR_R	
+			
+;CHECK_BUSY2	
+;			AND R4, #0x10;
+;			SUBS R4, #16;
+;			BNE CHECK_BUSY2;
     
-    
-    BX  LR                          ;   return
+  
+;    BX  LR                          ;   return
+;******************************
+
 
 ; This is a helper function that sends an 8-bit data to the LCD.
 ; Input: R0  8-bit data to transmit
 ; Output: none
 ; Assumes: SSI0 and port A have already been initialized and enabled
+
 writedata
-;; --UUU-- Code to write data to the LCD
-;1) Read SSI0_SR_R and check bit 1, 
-;2) If bit 1 is low loop back to step 1 (wait for TNF bit to be high)
-;3) Set D/C=PA6 to one
-;4) Write the 8-bit data to SSI0_DR_R
+				;; --UUU-- Code to write data to the LCD
+				;1) Read SSI0_SR_R and check bit 1, 
+				;2) If bit 1 is low loop back to step 1 (wait for TNF bit to be high)
+				;3) Set D/C=PA6 to one
+				;4) Write the 8-bit data to SSI0_DR_R
 
 CHECK	LDR R6,=SSI0_SR_R
+		LDR R5, [R6]
 		SUBS R6,#0x02		
-		BNE CHECK					; keep looping till bit 1 is low
-		LDR R5,=DC;
-		LDR R4,[R5];
-		ORR R4,#0xFFFFFFFF;			; set D/C to 1
-		STR R4,[R5];
+		BNE CHECK					; if bit 1 is high, keep looping
+		
+		LDR R6, =DC					;Set PA6 to one
+		LDR R5, =DC_DATA
+		STR R5, [R6]
+		
 		LDR R6,=SSI0_DR_R
 		STR R0,[R6]					; write 8 bit data
 		
-    BX  LR                          ;   return 
+		BX  LR                          ;   return 
     
    
 

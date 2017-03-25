@@ -1,5 +1,5 @@
 ; Print.s
-; Student names: change this to your names or look very silly
+; Student names: John Sigmon and Neel Kattumadam
 ; Last modification date: change this to the last modification date or look very silly
 ; Runs on LM4F120 or TM4C123
 ; EE319K lab 7 device driver for any LCD
@@ -61,6 +61,7 @@ LCD_OutDec
 	PUSH{R2}
 	ADDS R1,#0;
 	BEQ finish
+	
 	
 	
 	

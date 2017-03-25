@@ -6,7 +6,7 @@
 // Program written by: John Sigmon and Neel Kattumadam
 // Date Created: 
 // Last Modified:  
-// Lab number: 6
+// Lab number: 7
 
 
 #include "tm4c123gh6pm.h"
@@ -23,7 +23,7 @@ void IO_Init(void) {
 	GPIO_PORTF_LOCK_R = 0x4C4F434B;   //  unlock GPIO Port F
 	GPIO_PORTF_CR_R = 0x1F;           // allow changes to PF4-0
 	GPIO_PORTF_DIR_R |= 0x00000004;		//Set PF2 to be output
-	GPIO_PORTF_DIR_R &= 0x0000000F;		//Clear PF4 to be input
+	GPIO_PORTF_DIR_R &= 0xFFFFFFEF;		//Clear PF4 to be input
 	GPIO_PORTF_AFSEL_R = 0x00;				// Turn off Alt Func.
 	GPIO_PORTF_DEN_R |= 0x14;					//Set PF2 and PF4 to Digital
 }
@@ -60,6 +60,7 @@ void IO_Touch(void) {
 	
 	}
 	
+Wait10ms();
 Wait10ms();
 	
 		while((GPIO_PORTF_DATA_R|=0x10)==0) {
