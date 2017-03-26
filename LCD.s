@@ -67,7 +67,7 @@ writecommand
 				;4) Write the command to SSI0_DR_R
 				;5) Read SSI0_SR_R and check bit 4, 
 				;6) If bit 4 is high, loop back to step 5 (wait for BUSY bit to be low)
-			
+			PUSH {R4, R5, R6, R7}
 			MOV R7, #0
 CHECK_BUSY	
 			LDR R6,=SSI0_SR_R
@@ -75,8 +75,9 @@ CHECK_BUSY
 			AND R4, #0x10
 			SUBS R4, #16
 			BEQ CHECK_BUSY			; if bit4 is high, keep looping
-			ADD R7, #0
+			ADDS R7, #0
 			BEQ FIRST_RUN
+			POP {R4, R5, R6, R7}
 			BX LR
 			
 FIRST_RUN	LDR R6, =DC				
@@ -122,8 +123,9 @@ writedata
 
 CHECK	LDR R6,=SSI0_SR_R
 		LDR R5, [R6]
-		SUBS R6,#0x02		
-		BNE CHECK					; if bit 1 is high, keep looping
+		AND R5, #0x02
+		SUBS R5,#0x02		
+		BNE CHECK					; if bit 1 is low, keep looping
 		
 		LDR R6, =DC					;Set PA6 to one
 		LDR R5, =DC_DATA
