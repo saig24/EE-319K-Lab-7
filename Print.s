@@ -8,7 +8,9 @@
 ; This driver assumes two low-level LCD functions
 ; ST7735_OutChar   outputs a single 8-bit ASCII character
 ; ST7735_OutString outputs a null-terminated string 
-
+MAX EQU 10000
+STAR EQU 0x2A
+DOT EQU 0x2E
     IMPORT   ST7735_OutChar
     IMPORT   ST7735_OutString
     EXPORT   LCD_OutDec
@@ -27,59 +29,35 @@
 ; Invariables: This function must not permanently modify registers R4 to R11
 LCD_OutDec
 
+CHECK
+	PUSH{R14}
 	MOV R3,#10;
  	UDIV R1,R0,R3;		;divide R0(input) by 10
-	MUL R3,R1,R3
-	SUBS R2,R0,R3		;calculate remainder of r0/10
+	MUL R2,R1,R3
+	SUBS R2,R0,R2		;calculate remainder of r0/10
 	ADD R2,R2,#0X30;	; add x30 to calculate ascii value of integer
 	PUSH{R2}
 	ADDS R1,#0;			; check if quotient of division is 0, exit if that's the case
-	BEQ finish
-	
-	MOV R3,#10
-	UDIV R2,R1,R3;
-	MUL R3,R2,R3
-	SUBS R4,R1,R3
-	ADD R4,R4,#0X30;
-	PUSH{R4}
-	ADDS R1,#0;
-	BEQ finish
-	
-	MOV R3,#10
-	UDIV R1,R2,R3;
-	MUL R3,R1,R3
-	SUBS R2,R2,R3
-	ADD R2,R2,#0X30;
-	PUSH{R2}
-	ADDS R1,#0;
-	BEQ finish
-	
-	UDIV R1,R0,R3;
-	MUL R3,R1,R3
-	SUBS R2,R0,R3
-	ADD R2,R2,#0X30;
-	PUSH{R2}
-	ADDS R1,#0;
-	BEQ finish
+	BNE CHECK
 	
 	
 	
 	
 	
-	
-finish POP{R0,R1,R2}		; POP all the registers containing ascii values
+finish 
+	POP{R0}		; POP all the registers containing ascii values
+	CMP R0,#0
+	BEQ DONE
 	BL ST7735_OutChar		; branch to output method
-	ADD R0,R1;				; move output value into r0
-	BL ST7735_OutChar
-	ADD R0,R2;
-	BL ST7735_OutChar
+	B finish
 
 
 	
 
 
-
-      BX  LR
+DONE
+	POP {R14}
+    BX  LR
 ;* * * * * * * * End of LCD_OutDec * * * * * * * *
 
 ; -----------------------LCD _OutFix----------------------
@@ -94,8 +72,51 @@ finish POP{R0,R1,R2}		; POP all the registers containing ascii values
 ;       R0=9999, then output "9.999 "
 ;       R0>9999, then output "*.*** "
 ; Invariables: This function must not permanently modify registers R4 to R11
-LCD_OutFix
-
+LCD_OutFix ;Checks to see if input is greater than max
+	PUSH{R14}
+	LDR R1,=MAX
+	SUBS R2,R0,R1
+	BMI LARGE
+	MOV R12, #4
+EVAL	; calculate the remainder, and use the quotient to start each iteration
+	MOV R3,#10;
+ 	UDIV R1,R0,R3;		;divide R0(input) by 10
+	MUL R2,R1,R3
+	SUBS R2,R0,R2
+	ADD R2,R2,#0X30;	
+	PUSH{R2}
+	ADD R0,R1,#0
+	SUBS R12,#1
+	BNE EVAL
+	
+NORMAL ; output value, .,value,value,value
+	POP{R0} 
+	BL ST7735_OutChar
+	LDR R0,=DOT
+	BL ST7735_OutChar
+	POP{R0}
+	BL ST7735_OutChar
+	POP{R0}
+	BL ST7735_OutChar
+	POP{R0}
+	BL ST7735_OutChar
+	POP{R14}
+	BX LR
+	
+	
+	
+LARGE; if the original input was too large output this default string *.***
+	LDR R0,=STAR
+	BL ST7735_OutChar
+	LDR R0,=DOT
+	BL ST7735_OutChar
+	LDR R0,=STAR
+	BL ST7735_OutChar
+	LDR R0,=STAR
+	BL ST7735_OutChar
+	LDR R0,=STAR
+	BL ST7735_OutChar
+	POP{R14}
      BX   LR
  
      ALIGN
