@@ -81,7 +81,7 @@ CHECK_BUSY
 			BX LR
 			
 FIRST_RUN	LDR R6, =DC				
-			LDR R5, =DC_DATA
+			LDR R5, =DC_COMMAND
 			STR R5, [R6]
 			
 			LDR R5, =SSI0_DR_R
@@ -121,7 +121,8 @@ writedata
 				;3) Set D/C=PA6 to one
 				;4) Write the 8-bit data to SSI0_DR_R
 
-CHECK	LDR R6,=SSI0_SR_R
+CHECK	PUSH {R5, R6}
+		LDR R6,=SSI0_SR_R
 		LDR R5, [R6]
 		AND R5, #0x02
 		SUBS R5,#0x02		
@@ -134,6 +135,7 @@ CHECK	LDR R6,=SSI0_SR_R
 		LDR R6,=SSI0_DR_R
 		STR R0,[R6]					; write 8 bit data
 		
+		POP {R5, R6}
 		BX  LR                          ;   return 
     
    
