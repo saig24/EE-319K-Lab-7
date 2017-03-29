@@ -26,6 +26,7 @@ void IO_Init(void) {
 	GPIO_PORTF_DIR_R &= 0xFFFFFFEF;		//Clear PF4 to be input
 	GPIO_PORTF_AFSEL_R = 0x00;				// Turn off Alt Func.
 	GPIO_PORTF_DEN_R |= 0x14;					//Set PF2 and PF4 to Digital
+	GPIO_PORTF_PUR_R |= 0x10;					//Set PUR for PF4 switch
 }
 
 //------------IO_HeartBeat------------
@@ -56,14 +57,14 @@ void Wait10ms(void){
 // Output: none
 void IO_Touch(void) {
  // --UUU-- wait for release; delay for 20ms; and then wait for press
-	while((GPIO_PORTF_DATA_R|=0x10)!=0) {	
+	while((GPIO_PORTF_DATA_R &= 0x10)== 0x10) {	
 	
 	}
 	
 Wait10ms();
 Wait10ms();
 	
-		while((GPIO_PORTF_DATA_R|=0x10)==0) {
+		while((GPIO_PORTF_DATA_R &= 0x10)== 0 ) {
 	
 	}
 }  
