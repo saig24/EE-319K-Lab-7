@@ -60,55 +60,30 @@ SSI_SR_TNF              EQU   0x00000002  ; SSI Transmit FIFO Not Full
 	; Assumes: SSI0 and port A have already been initialized and enabled
 
 writecommand
-				;; --UUU-- Code to write a command to the LCD
-				;1) Read SSI0_SR_R and check bit 4, 
-				;2) If bit 4 is high, loop back to step 1 (wait for BUSY bit to be low)
-				;3) Clear D/C=PA6 to zero
-				;4) Write the command to SSI0_DR_R
-				;5) Read SSI0_SR_R and check bit 4, 
-				;6) If bit 4 is high, loop back to step 5 (wait for BUSY bit to be low)
-				
-			PUSH {R4, R5, R6, R7}
-			MOV R7, #0
-CHECK_BUSY	
-			LDR R6,=SSI0_SR_R
-			LDR R4,[R6]
-			AND R4, #0x10
-			SUBS R4, #16
-			BEQ CHECK_BUSY			; if bit4 is high, keep looping
-			ADDS R7, #0
-			BEQ FIRST_RUN
-			POP {R4, R5, R6, R7}
-			BX LR
-			
-FIRST_RUN	LDR R6, =DC				
-			LDR R5, =DC_COMMAND
-			STR R5, [R6]
-			
-			LDR R5, =SSI0_DR_R
-			STR R0, [R5]					;Writes command from R0 to SSIO_DR_R
-			ADD R7, #1
-			B CHECK_BUSY
-			
-			
-;**********old code***************			
-			;LDR R5,=DC;
-			;LDR R4,[R5];
-			;AND R4,#0;			; clear the D/C memory location
-			;LDR R4,=DC_COMMAND	;where is this command coming from??????	
-			;LDR R4,[R4];		; Is dc command the command or the address of the command?
-			;LDR R6,=SSI0_DR_R
-			;STR R4,[R6];		;write command to SSIO_DR_R	
-			
-;CHECK_BUSY2	
-;			AND R4, #0x10;
-;			SUBS R4, #16;
-;			BNE CHECK_BUSY2;
-    
-  
-;    BX  LR                          ;   return
-;******************************
+		
+		LDR R2,=SSI0_SR_R
+Check1	LDR R1,[R2]
+		AND R1,#0x10
+		CMP R1,#0x10
+		BEQ Check1
+		
+		LDR R2,=DC
+		AND R1,#0x00
+		STR R1,[R2]
+		LDR R2,=SSI0_DR_R
+		STRB R0,[R2]
+		LDR R2,=SSI0_SR_R
 
+Check2	LDR R1,[R2]
+		AND R1,#0x10
+		CMP R1,#0x10
+		BEQ Check2
+
+		BX  LR                          ;   return
+
+
+			
+		
 
 ; This is a helper function that sends an 8-bit data to the LCD.
 ; Input: R0  8-bit data to transmit
@@ -122,24 +97,21 @@ writedata
 				;3) Set D/C=PA6 to one
 				;4) Write the 8-bit data to SSI0_DR_R
 
-CHECK	PUSH {R5, R6}
-		LDR R6,=SSI0_SR_R
-		LDR R5, [R6]
-		AND R5, #0x02
-		SUBS R5,#0x02		
-		BNE CHECK					; if bit 1 is low, keep looping
+		LDR R2,=SSI0_SR_R
+Check3	LDR R1,[R2]
+		AND R1,#0x02
+		CMP R1,#0
+		BEQ Check3
 		
-		LDR R6, =DC					;Set PA6 to one
-		LDR R5, =DC_DATA
-		STR R5, [R6]
+		LDR R2,=DC
+		LDR R1,=DC_DATA
 		
-		LDR R6,=SSI0_DR_R
-		STRB R0,[R6]					; write 8 bit data
-		
-		POP {R5, R6}
-		BX  LR                          ;   return 
+		STRB R1,[R2]
+		LDR R2,=SSI0_DR_R
+		STR R0,[R2]
     
-   
+		BX  LR                          ;   return
+
 
 
 ;***************************************************

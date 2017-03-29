@@ -64,7 +64,7 @@ void IO_Touch(void) {
 Wait10ms();
 Wait10ms();
 	
-		while((GPIO_PORTF_DATA_R &= 0x10)== 0 ) {
+		while((GPIO_PORTF_DATA_R &= 0x10)== 0x0 ) {
 	
 	}
 }  
