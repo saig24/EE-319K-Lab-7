@@ -144,7 +144,7 @@ void SysTick_Handler(void){
 	UART_OutChar(End);
 	
 	//--Increments TxCounter for debugging
-	TxCounter ++;
+	TxCounter++;
 	
 	GPIO_PORTF_DATA_R |= 0x01;
 	
