@@ -64,7 +64,7 @@ int main(void){
 	while (1){
 		while(FiFo_Get(data)==1){
 			if(*data==0x02){
-				for(int i=0;i<8;i++){
+				for(int i=1;i<8;i++){
 					FiFo_Get(data);
 					output[i]=*data;
 				}
@@ -87,6 +87,7 @@ int main(void){
 int main1(void){ 
   
   TExaS_Init();       // Bus clock is 80 MHz 
+	FiFo_Init();
   ST7735_InitR(INITR_REDTAB);
   ADC_Init();    // initialize to sample ADC
   PortF_Init();
@@ -96,9 +97,24 @@ int main1(void){
   ST7735_OutString(" cm");
 	SysTick_Init();
   EnableInterrupts();
-  
+  char array[8];
 	while(1){
 		//--UUU--Complete this  - see lab manual
+		while(FiFo_Get(array)==0){
+		}
+		if(array[0]==0x02){
+			ST7735_SetCursor(0,0);
+			int i=0;
+			while(i<7){
+				FiFo_Get(&array[i]);
+				i++;
+			}
+			array[5]='\0';
+			ST7735_OutString(array);
+		}
+		else{
+			while(FiFo_Get(array)!=0){}
+		}
 	}
 }
 

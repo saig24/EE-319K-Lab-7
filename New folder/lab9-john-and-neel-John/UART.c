@@ -21,7 +21,7 @@
 #define PF1       (*((volatile uint32_t *)0x40025008))
 #define PF2       (*((volatile uint32_t *)0x40025010))
 #define PF3       (*((volatile uint32_t *)0x40025020))
-uint32_t RxCounter = 0;	// debugging counter- measures number of converted samples (in)
+uint32_t RxCounter,RXmail,RXstatus = 0;	// debugging counter- measures number of converted samples (in)
 
 uint32_t DataLost; 
 // Initialize UART1
@@ -85,14 +85,13 @@ void UART_OutChar(char data){
 
 void UART1_Handler(void){
   // --UUU-- complete with your code
-	char data;
 	PF2^=0X04;
-	PF2^=0X04;
-	while((UART1_FR_R&0x0010)==0){
-		
-		data=(unsigned char)(UART1_DR_R&0xFF);
-		FiFo_put(data);
+	for(int i=0;i<8;i++){
+	while((UART1_FR_R&0x0010)!=0){}
+		RXmail=UART_InChar();
+		FiFo_Put(RXmail);
 	}
+
 	RxCounter++;
 	UART1_ICR_R = 0x10;
 	PF2^=0X04;

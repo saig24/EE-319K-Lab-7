@@ -13,7 +13,8 @@
 	void EnableInterrupts(void);
 	uint32_t Iget=0;
 	uint32_t count=0;
-	char FiFo[8];
+	char FiFo[10];
+	
 	
 // *********** FiFo_Init**********
 // Initializes a software FIFO of a
@@ -61,7 +62,7 @@ if(count==0){
 }
 else{
 *datapt=FiFo[Iget];
-Iget=(Iget+1)%8;
+Iget=(Iget+1)%10;
 DisableInterrupts();
 count--;
 EnableInterrupts();
