@@ -43,8 +43,10 @@ void UART_Init(void){
 	GPIO_PORTC_AMSEL_R  &= ~0x30;		//Disable analog function on PC4, PC5
 	GPIO_PORTC_AFSEL_R |=0x30;			//Enable alternate function on PC4, PC5
 	GPIO_PORTC_DEN_R |= 0x30;				//Enable digital function on PC4, PC5
-	
+	NVIC_PRI1_R = (NVIC_PRI1_R & 0xFF0FFFFF) | 0x00E00000;
+  NVIC_EN0_R = NVIC_EN0_INT6;
 }
+
 
 
 
