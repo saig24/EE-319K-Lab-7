@@ -24,6 +24,7 @@ void FiFo_Init() {
 
 	Iput=0;
 	Iget=0;
+	count=0;
 
 }
 

@@ -57,7 +57,7 @@ void UART_Init(void){
 // spins if RxFifo is empty
 
 char UART_InChar(void){
-	while ((UART1_FR_R & 0x0010) !=0);
+	while ((UART1_FR_R & 0x0010) !=0){}
   return ((char)(UART1_DR_R & 0xFF));
 }
 
@@ -87,6 +87,7 @@ void UART_OutChar(char data){
 
 void UART1_Handler(void){
   // --UUU-- complete with your code
+	PF2^=0X04;
 	PF2^=0X04;
 	for(int i=0;i<8;i++){
 	while((UART1_FR_R&0x0010)!=0){}
