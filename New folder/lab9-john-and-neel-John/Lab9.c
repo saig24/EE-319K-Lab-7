@@ -196,7 +196,6 @@ uint32_t Convert(uint32_t input){
 }
 
 
-
 uint32_t Status[20];             // entries 0,7,12,19 should be false, others true
 char GetData[10];  // entries 1 2 3 4 5 6 7 8 should be 1 2 3 4 5 6 7 8
 int mainfifo(void){ // Make this main to test FiFo
